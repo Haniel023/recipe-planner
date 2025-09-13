@@ -1,5 +1,6 @@
 import react, { useState } from "react";
 import { Input, Button, Row, Col, Card } from "antd";
+import { Link } from "react-router-dom";
 import { API_URL, API_KEY } from "../config";
 
 const { Search } = Input;
@@ -36,12 +37,14 @@ function Home() {
             <Row gutter={[16, 16]}>
                 {recipes.map((recipe) => (
                     <Col key={recipe.id} xs={24} sm={12} md={8}>
-                        <Card
-                            hoverable
-                            cover={<img alt={recipe.title} src={recipe.image} />}
-                        >
-                            <Card.Meta title={recipe.title} />
-                        </Card>
+                        <Link to={`/recipe/${recipe.id}`}>
+                            <Card
+                                hoverable
+                                cover={<img alt={recipe.title} src={recipe.image} />}
+                            >
+                                <Card.Meta title={recipe.title} />
+                            </Card>
+                        </Link>
                     </Col>
                 ))}
             </Row>
