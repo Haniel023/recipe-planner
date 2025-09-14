@@ -1,14 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { API_KEY } from "../config";
-import { Card, List, Typography } from "antd";
+import { Card, List, Typography, Button, Select } from "antd";
 import parse from "html-react-parser";
+import { MealPlanContext } from "../context/MealPlanContext";
 
 const { Title, Paragraph } = Typography;
+const { Option } = Select;
 
 function RecipeDetails(){
     const { id } = useParams();
     const [recipe, setRecipe] = useState(null);
+    const { addRecipeToDay } = useContext(MealPlanContext);
+    const [selectedDay, setSelectedDay] = useState("Monday");
 
     useEffect(() => {
         const fetchRecipe = async () => {
@@ -24,6 +28,10 @@ function RecipeDetails(){
         fetchRecipe();
     }, [id]);
 
+    const handleAdd = () => {
+        addRecipeToDay(selectedDay, {id: recipe.id, title: recipe.title, image:recipe.image});
+    }
+
     if (!recipe) return <p>Loading...</p>
 
     return (
@@ -34,6 +42,15 @@ function RecipeDetails(){
                 alt={recipe.title}
                 style={{ maxWidth: "100%", marginBottom: "20px" }}
             />
+
+            <div style={{ margin: "20px 0"}}>
+                <Select defaultValue="Monday" style={{ width: 150, marginRight: 10}} onChange={setSelectedDay}>
+                    {["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].map(day => (
+                        <Option key={day} value={day}>{day}</Option>
+                    ))}
+                </Select>
+                <Button type="primary" onClick={handleAdd}>Add to Meal Plan</Button>
+            </div>
 
             <Paragraph>
                 <strong>Servings:</strong> {recipe.servings} |{" "}
